@@ -19,9 +19,6 @@ import android.support.annotation.NonNull;
 
 import com.example.root.demoapp.data.Repository;
 import com.example.root.demoapp.data.model.Friend;
-import com.example.root.demoapp.data.model.FriendListResponse;
-import com.example.root.demoapp.data.remote.networking.NetworkError;
-import com.example.root.demoapp.data.remote.networking.Service;
 import com.example.root.demoapp.presentation.view.FriendListView;
 
 import java.util.ArrayList;
@@ -29,8 +26,11 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class FriendListPresenter implements Presenter {
@@ -69,21 +69,23 @@ public class FriendListPresenter implements Presenter {
      * Loads all friends.
      */
     private void loadFriendList() {
-        final ArrayList<Friend> friendList = new ArrayList<>();
+        Disposable subscription  =  repository.getData()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<ArrayList<Friend>>() {
 
-        Disposable subscription = repository.getDataFromRemote(
-                new Service.GetFriendsListCallback() {
                     @Override
-                    public void onSuccess(FriendListResponse cityListResponse) {
-                        for (Friend friend: cityListResponse.getData()) {
-                            friendList.add(friend);
-                        }
-
-                        showFriendsCollectionInView(friendList);
+                    public void onNext(@io.reactivex.annotations.NonNull ArrayList<Friend> friends) {
+                        showFriendsCollectionInView(friends);
                     }
 
                     @Override
-                    public void onError(NetworkError networkError) {
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
 
                     }
                 });
@@ -96,8 +98,8 @@ public class FriendListPresenter implements Presenter {
     }
 
 
-    public void onFriendItemClicked(Friend friend) {
-        this.viewFriendsList.viewUser(friend);
+    public void onFriendItemClicked(Friend model) {
+        this.viewFriendsList.viewUser(model);
     }
 
 }

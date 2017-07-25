@@ -112,9 +112,9 @@ public class FriendListFragment extends BaseFragment implements FriendListView {
         }
     }
 
-    @Override public void viewUser(Friend userModel) {
+    @Override public void viewUser(Friend model) {
         if (this.friendListListener != null) {
-            this.friendListListener.onFriendClicked(userModel);
+            this.friendListListener.onFriendClicked(model);
         }
     }
 
@@ -125,9 +125,9 @@ public class FriendListFragment extends BaseFragment implements FriendListView {
     private void setupRecyclerView() {
         this.friendsAdapter.setOnItemClickListener(
                 new FriendsAdapter.OnItemClickListener() {
-                    @Override public void onUserItemClicked(Friend friend) {
-                        if (FriendListFragment.this.userListPresenter != null && friend != null) {
-                            FriendListFragment.this.userListPresenter.onFriendItemClicked(friend);
+                    @Override public void onUserItemClicked(Friend friendResponse) {
+                        if (FriendListFragment.this.userListPresenter != null && friendResponse != null) {
+                            FriendListFragment.this.userListPresenter.onFriendItemClicked(friendResponse);
                         }
                     }
                 });

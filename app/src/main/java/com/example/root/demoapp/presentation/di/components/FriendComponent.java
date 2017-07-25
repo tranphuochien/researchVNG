@@ -32,7 +32,5 @@ import dagger.Component;
 public interface FriendComponent extends ActivityComponent {
     void inject(FriendListFragment friendListFragment);
     void inject(LoginFragment loginFragment);
-    //void inject(UserDetailsFragment userDetailsFragment);
-
     Repository getRepository();
 }

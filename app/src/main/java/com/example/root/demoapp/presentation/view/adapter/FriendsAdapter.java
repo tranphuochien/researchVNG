@@ -57,18 +57,18 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
     }
 
     @Override public void onBindViewHolder(FriendViewHolder holder, final int position) {
-        final Friend friend = this.usersCollection.get(position);
-        holder.textViewTitle.setText(friend.getName());
+        final Friend friendResponse = this.usersCollection.get(position);
+        holder.textViewTitle.setText(friendResponse.getName());
         Glide.with(context)
-                .load(friend.getPicture().getData().getUrl())
-                .skipMemoryCache(false)
+                .load(friendResponse.getLinkAvatar())
+                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .placeholder(R.mipmap.ic_launcher)
                 .into(holder.imgAvatar);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (FriendsAdapter.this.onItemClickListener != null) {
-                    FriendsAdapter.this.onItemClickListener.onUserItemClicked(friend);
+                    FriendsAdapter.this.onItemClickListener.onUserItemClicked(friendResponse);
                 }
             }
         });

@@ -22,6 +22,5 @@ import dagger.Module;
  */
 @Module
 public class FriendModule {
-
-  public FriendModule() {}
+    public FriendModule() {}
 }

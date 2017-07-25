@@ -36,19 +36,27 @@ public abstract class BaseActivity extends Activity implements HasComponent<Frie
     Navigator navigator;
     private BroadcastReceiver mReceiver;
     private FriendComponent friendComponent;
+    private EventBus eventBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getApplicationComponent().inject(this);
+
         //Register network change receiver
+        eventBus = ((MyApplication)getApplication()).getEventBus();
         mReceiver = new NetworkChangeReceiver();
         registerReceiver(mReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        initializeInjector();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         //Register evenbus
-        EventBus.getDefault().register(this);
+        this.eventBus.register(this);
 
-        initializeInjector();
     }
 
     protected void addFragment(int containerViewId, Fragment fragment) {
@@ -88,13 +96,22 @@ public abstract class BaseActivity extends Activity implements HasComponent<Frie
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(MessageEvent messageEvent) {
+        //Handle event
         showToastMessage(messageEvent.getmMessage());
+
+        //Remove current sticky event
+        eventBus.removeStickyEvent(MessageEvent.class);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        eventBus.unregister(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
-        EventBus.getDefault().unregister(this);
     }
 }

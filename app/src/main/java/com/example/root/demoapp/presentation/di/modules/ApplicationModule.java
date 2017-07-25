@@ -27,13 +27,13 @@ import dagger.Provides;
  */
 @Module
 public class ApplicationModule {
-  private final MyApplication application;
+    private final MyApplication application;
 
-  public ApplicationModule(MyApplication application) {
-    this.application = application;
-  }
+    public ApplicationModule(MyApplication application) {
+        this.application = application;
+    }
 
-  @Provides Context provideApplicationContext() {
-    return this.application;
-  }
+    @Provides Context provideApplicationContext() {
+        return this.application;
+    }
 }

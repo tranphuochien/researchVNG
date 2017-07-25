@@ -1,62 +1,51 @@
 package com.example.root.demoapp.data.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
 
+/**
+ * Created by root on 21/07/2017.
+ */
+
+
+@Entity
 public class Friend {
-    @SerializedName("id")
-    @Expose
-    private String id;
+    @Id
+    String id;
+    String name;
+    String linkAvatar;
 
-    @SerializedName("name")
-    @Expose
-    private String name;
 
-    @SerializedName("picture")
-    @Expose
-    private PictureAvt picture;
 
-    public String getId() {
-        return id;
+    @Generated(hash = 292603829)
+    public Friend(String id, String name, String linkAvatar) {
+        this.id = id;
+        this.name = name;
+        this.linkAvatar = linkAvatar;
+    }
+    @Generated(hash = 287143722)
+    public Friend() {
     }
 
+  
 
+    public String getId() {
+        return this.id;
+    }
     public void setId(String id) {
         this.id = id;
     }
-
-
     public String getName() {
-        return name;
+        return this.name;
     }
-
-
     public void setName(String name) {
         this.name = name;
     }
-
-    public PictureAvt getPicture() {
-        return this.picture;
+    public String getLinkAvatar() {
+        return this.linkAvatar;
     }
-
-    public void setPicture(PictureAvt picture) {
-        this.picture = picture;
-    }
-
-    public class PictureAvt {
-        private Data data;
-
-        public void setData(Data data) {this.data = data;}
-        public Data getData() { return this.data;}
-    }
-
-    public class Data {
-        private String is_silhouette;
-        private String url;
-
-        public void setIs_silhouette(String is_silhouette) {this.is_silhouette = is_silhouette;}
-        public void setUrl(String url) {this.url = url;}
-        public String getIs_silhouette() {return this.is_silhouette;}
-        public String getUrl() {return this.url;}
+    public void setLinkAvatar(String linkAvatar) {
+        this.linkAvatar = linkAvatar;
     }
 }

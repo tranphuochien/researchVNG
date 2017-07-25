@@ -1,9 +1,14 @@
 package com.example.root.demoapp.data.remote;
 
 import com.example.root.demoapp.data.DataSource;
+import com.example.root.demoapp.data.model.Friend;
 import com.example.root.demoapp.data.remote.networking.Service;
 
-import io.reactivex.disposables.Disposable;
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+
+import io.reactivex.Observable;
 
 /**
  * Created by root on 21/07/2017.
@@ -12,16 +17,13 @@ import io.reactivex.disposables.Disposable;
 public class RemoteDataSource implements DataSource{
     private Service service;
 
+    @Inject
     public RemoteDataSource(Service service){
         this.service = service;
     }
 
-    public Disposable callFacebookAPI(Service.GetFriendsListCallback callback){
-        return service.mFacebookAPI(callback);
-    }
-
     @Override
-    public Disposable getData() {
-        return null;
+    public Observable<ArrayList<Friend>> getData() {
+        return service.mFacebookAPI();
     }
 }

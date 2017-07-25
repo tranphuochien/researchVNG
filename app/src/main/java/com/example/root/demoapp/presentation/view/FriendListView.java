@@ -13,5 +13,5 @@ public interface FriendListView extends LoadDataView {
 
   void renderUserList(Collection<Friend> userModelCollection);
 
-  void viewUser(Friend userModel);
+  void viewUser(Friend model);
 }

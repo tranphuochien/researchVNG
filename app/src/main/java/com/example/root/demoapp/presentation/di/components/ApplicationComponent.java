@@ -15,6 +15,7 @@
  */
 package com.example.root.demoapp.presentation.di.components;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.example.root.demoapp.presentation.di.modules.ApplicationModule;
@@ -27,7 +28,8 @@ import dagger.Component;
  */
 @Component(modules = ApplicationModule.class)
 public interface ApplicationComponent {
-  void inject(BaseActivity baseActivity);
+    void inject(BaseActivity baseActivity);
+    void inject(Application application);
 
-  Context context();
+    Context context();
 }

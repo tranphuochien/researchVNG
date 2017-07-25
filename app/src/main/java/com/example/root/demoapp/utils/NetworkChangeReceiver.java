@@ -19,7 +19,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         boolean status = isNetworkAvailable(context);
 
         //Log.d("Debud", "network: " + String.valueOf(status));
-        EventBus.getDefault().post(new MessageEvent(String.valueOf(status)));
+        EventBus.getDefault().postSticky(new MessageEvent(String.valueOf(status)));
     }
 
     public static boolean isNetworkAvailable(Context context){

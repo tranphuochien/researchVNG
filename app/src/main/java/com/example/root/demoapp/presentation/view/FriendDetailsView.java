@@ -4,9 +4,9 @@
  */
 package com.example.root.demoapp.presentation.view;
 
-import com.example.root.demoapp.data.model.Friend;
+import com.example.root.demoapp.data.model.FriendResponse;
 
 
 public interface FriendDetailsView extends LoadDataView {
-  void renderUser(Friend friend);
+  void renderUser(FriendResponse friendResponse);
 }
