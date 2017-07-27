@@ -28,8 +28,6 @@ public class Friend {
     public Friend() {
     }
 
-  
-
     public String getId() {
         return this.id;
     }

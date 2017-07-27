@@ -12,10 +12,10 @@ public class Paging {
     @Expose
     Cursors cursors;
     @SerializedName("next")
-    @Expose
+    @Expose (serialize = false, deserialize = false)
     String next;
 
-    private class Cursors {
+    public class Cursors {
         @SerializedName("before")
         @Expose
         String before;
@@ -23,8 +23,18 @@ public class Paging {
         @Expose
         String after;
 
-        public void setBefore(String before) {this.before = before;}
-        public String getBefore () {return this.before;}
+        public void setBefore(String before) {
+            this.before = before;
+        }
+        public String getBefore () {
+            return this.before;
+        }
+        public void setAfter(String after) {
+            this.after = after;
+        }
+        public String getAfter() {
+            return this.after;
+        }
     }
 
     public Cursors getCursors() {return this.cursors;}

@@ -49,6 +49,9 @@ public class NetworkModule {
                     }
                 })*/
                 .cache(cache)
+                .addNetworkInterceptor(FeedInterceptor.getOnlineInterceptor(context))
+                .addInterceptor(FeedInterceptor.getOfflineInterceptor(context))
+
                 .build();
 
 

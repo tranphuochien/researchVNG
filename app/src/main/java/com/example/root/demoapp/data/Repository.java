@@ -19,6 +19,8 @@ import io.reactivex.functions.Predicate;
 public class Repository implements DataSource{
     private final DataSource mRemoteDataSource;
     private final DataSource mLocalDataSource;
+    private Observable<ArrayList<Friend>> mObservableLocal;
+    private Observable<ArrayList<Friend>> mObservableRemote;
 
     @Inject
     public Repository(RemoteDataSource remoteDataSource,
@@ -28,8 +30,11 @@ public class Repository implements DataSource{
     }
 
     public Observable<ArrayList<Friend>> getData() {
+        this.mObservableLocal = mLocalDataSource.getData();
+        this.mObservableRemote = mRemoteDataSource.getData();
+
         return Observable
-                .concat(mLocalDataSource.getData(),mRemoteDataSource.getData())
+                .concat(this.mObservableLocal, mObservableRemote)
                 .filter(new Predicate<ArrayList<Friend>>() {
                     @Override
                     public boolean test(@NonNull ArrayList<Friend> friends) throws Exception {
@@ -37,7 +42,5 @@ public class Repository implements DataSource{
                     }
                 })
                 .take(1);
-        //return mRemoteDataSource.getData();
-        //return mLocalDataSource.getData();
     }
 }

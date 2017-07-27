@@ -71,6 +71,7 @@ public class LoginFragment extends BaseFragment implements LoginView {
     public void onDetach() {
         super.onDetach();
         loginListener = null;
+        callbackManager = null;
     }
 
     @Override public void onCreate(Bundle savedInstanceState) {

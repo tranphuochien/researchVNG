@@ -12,7 +12,9 @@ public interface NetworkService {
     @GET("{user_id}/taggable_friends")
     Observable<FriendListResponse> getFriendList(
             @Path("user_id") String userId,
-            @Query("access_token") String access_token
+            @Query("access_token") String access_token,
+            @Query("limit") int limit,
+            @Query("after") String after
             );
 
 }

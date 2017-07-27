@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.root.demoapp.data.model.Friend;
 import com.example.root.demoapp.presentation.di.components.FriendComponent;
 import com.example.root.demoapp.presentation.presenter.FriendListPresenter;
 import com.example.root.demoapp.presentation.view.FriendListView;
+import com.example.root.demoapp.presentation.view.adapter.EndlessRecyclerViewScrollListener;
 import com.example.root.demoapp.presentation.view.adapter.FriendsAdapter;
 
 import java.util.Collection;
@@ -37,7 +39,7 @@ public class FriendListFragment extends BaseFragment implements FriendListView {
     }
 
     @Inject
-    FriendListPresenter userListPresenter;
+    FriendListPresenter friendListPresenter;
     @Inject
     FriendsAdapter friendsAdapter;
 
@@ -59,7 +61,7 @@ public class FriendListFragment extends BaseFragment implements FriendListView {
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getComponent(FriendComponent.class).inject(this);
-        this.userListPresenter.setRepository(
+        this.friendListPresenter.setRepository(
                 this.getComponent(FriendComponent.class).getRepository());
     }
 
@@ -73,7 +75,7 @@ public class FriendListFragment extends BaseFragment implements FriendListView {
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.userListPresenter.setView(this);
+        this.friendListPresenter.setView(this);
         if (savedInstanceState == null) {
             this.loadUserList();
         }
@@ -81,12 +83,12 @@ public class FriendListFragment extends BaseFragment implements FriendListView {
 
     @Override public void onResume() {
         super.onResume();
-        this.userListPresenter.resume();
+        this.friendListPresenter.resume();
     }
 
     @Override public void onPause() {
         super.onPause();
-        this.userListPresenter.pause();
+        this.friendListPresenter.pause();
     }
 
     @Override public void onDestroyView() {
@@ -97,7 +99,7 @@ public class FriendListFragment extends BaseFragment implements FriendListView {
 
     @Override public void onDestroy() {
         super.onDestroy();
-        this.userListPresenter.destroy();
+        this.friendListPresenter.destroy();
     }
 
     @Override public void onDetach() {
@@ -125,21 +127,44 @@ public class FriendListFragment extends BaseFragment implements FriendListView {
     private void setupRecyclerView() {
         this.friendsAdapter.setOnItemClickListener(
                 new FriendsAdapter.OnItemClickListener() {
-                    @Override public void onUserItemClicked(Friend friendResponse) {
-                        if (FriendListFragment.this.userListPresenter != null && friendResponse != null) {
-                            FriendListFragment.this.userListPresenter.onFriendItemClicked(friendResponse);
+                    @Override
+                    public void onUserItemClicked(Friend friendResponse) {
+                        if (FriendListFragment.this.friendListPresenter != null && friendResponse != null) {
+                            FriendListFragment.this.friendListPresenter.onFriendItemClicked(friendResponse);
                         }
                     }
                 });
-        this.rv_users.setLayoutManager(new LinearLayoutManager(context()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context());
+        this.rv_users.setLayoutManager(linearLayoutManager);
         this.rv_users.setAdapter(friendsAdapter);
+        this.rv_users.addOnScrollListener(
+                new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+                    @Override
+                    public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                        // Triggered only when new data needs to be appended to the list
+                        // Add whatever code is needed to append new items to the bottom of the list
+                        loadNextDataFromApi(page);
+                        Log.d("Debug", "On load more");
+
+                    }
+                }
+        );
+    }
+
+    private void loadNextDataFromApi(int page) {
+        /*ArrayList<Friend> list = new ArrayList<>();
+        list.add(new Friend("AaIziyG1JEkBZEuLPbIpL_RKb7yvtCViFtp7wxXQYh_cCVu4z_By2eM5wEGyPk4W_M_E4KUhRLKfaRmWDwd0IjIXsYNMu5AOH5CHtjnb4wNerQ","abc", "https://scontent.xx.fbcdn.net/v/t1.0-1/c8.0.50.50/p50x50/11889657_528231363995171_106694820207113550_n.jpg?oh=68088b2d90424c8d0e745f1b4bab5bad&oe=5A0694D2"));
+
+        this.friendsAdapter.setUsersCollection(list);
+        */
+        this.friendListPresenter.loadMore();
     }
 
     /**
      * Loads all users.
      */
     private void loadUserList() {
-        this.userListPresenter.initialize();
+        this.friendListPresenter.initialize();
     }
 
 }

@@ -16,6 +16,7 @@
 package com.example.root.demoapp.presentation.presenter;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.root.demoapp.data.Repository;
 import com.example.root.demoapp.data.model.Friend;
@@ -57,11 +58,18 @@ public class FriendListPresenter implements Presenter {
 
     @Override public void destroy() {
         this.viewFriendsList = null;
-        if (disposable.isDisposed())
+        Log.d("Debug", "Dispose subcribe");
+        /*if (disposable.isDisposed()) {
             disposable.dispose();
+        }*/
+       disposable.clear();
     }
 
     public void initialize() {
+        this.loadFriendList();
+    }
+
+    public void loadMore() {
         this.loadFriendList();
     }
 

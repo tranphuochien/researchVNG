@@ -15,7 +15,12 @@
  */
 package com.example.root.demoapp.presentation.di.modules;
 
+import com.example.root.demoapp.presentation.di.AdapterRV;
+import com.example.root.demoapp.presentation.util.ImageManager.ImageManager;
+import com.example.root.demoapp.presentation.util.ImageManager.PicassoLib;
+
 import dagger.Module;
+import dagger.Provides;
 
 /**
  * Dagger module that provides user related collaborators.
@@ -23,4 +28,11 @@ import dagger.Module;
 @Module
 public class FriendModule {
     public FriendModule() {}
+
+    @Provides
+    @AdapterRV
+    ImageManager provideImageManager(){
+        return new PicassoLib();
+    }
+
 }

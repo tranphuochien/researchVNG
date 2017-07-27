@@ -40,13 +40,20 @@ public abstract class BaseActivity extends Activity implements HasComponent<Frie
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         this.getApplicationComponent().inject(this);
+        initializeInjector();
+
+        super.onCreate(savedInstanceState);
 
         //Register network change receiver
         eventBus = ((MyApplication)getApplication()).getEventBus();
         mReceiver = new NetworkChangeReceiver();
         registerReceiver(mReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+
+    }
+
+    protected void refreshComponent(){
         initializeInjector();
     }
 
@@ -56,7 +63,6 @@ public abstract class BaseActivity extends Activity implements HasComponent<Frie
 
         //Register evenbus
         this.eventBus.register(this);
-
     }
 
     protected void addFragment(int containerViewId, Fragment fragment) {
@@ -113,5 +119,6 @@ public abstract class BaseActivity extends Activity implements HasComponent<Frie
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
+        mReceiver = null;
     }
 }

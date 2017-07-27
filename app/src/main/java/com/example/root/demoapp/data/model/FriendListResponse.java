@@ -22,6 +22,10 @@ public class FriendListResponse {
         this.data = data;
     }
 
+    public Paging getPaging() {
+        return this.paging;
+    }
+
 
 
 }

@@ -33,4 +33,5 @@ public interface FriendComponent extends ActivityComponent {
     void inject(FriendListFragment friendListFragment);
     void inject(LoginFragment loginFragment);
     Repository getRepository();
+
 }

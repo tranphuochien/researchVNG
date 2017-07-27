@@ -9,7 +9,6 @@ import com.facebook.AccessToken;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -17,17 +16,21 @@ import io.reactivex.schedulers.Schedulers;
 
 public class Service {
     private final NetworkService networkService;
+    private static String curPage;
+    private static final int LIMIT_ENTRY_REQUEST = 25;
 
     public Service(NetworkService networkService) {
         this.networkService = networkService;
+        this.curPage = "";
     }
 
     public Observable<ArrayList<Friend>> mFacebookAPI() {
         AccessToken token = AccessToken.getCurrentAccessToken();
+        String userId = token.getUserId();
+        String tokenString = token.getToken();
 
-        return networkService.getFriendList(token.getUserId(), token.getToken())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        return networkService.getFriendList(userId, tokenString, LIMIT_ENTRY_REQUEST, curPage)
+                .observeOn(Schedulers.io())
                 .onErrorResumeNext(new Function<Throwable, Observable<? extends FriendListResponse>>() {
                     @Override
                     public Observable<? extends FriendListResponse> apply(@NonNull Throwable throwable) throws Exception {
@@ -38,6 +41,9 @@ public class Service {
                 .flatMap(new Function<FriendListResponse, Observable<ArrayList<Friend>>>() {
                     @Override
                     public Observable<ArrayList<Friend>> apply(@NonNull FriendListResponse friendListResponse) throws Exception {
+                        //Update afterPage
+                        updatePage(friendListResponse);
+
                         ArrayList<Friend> friendList = new ArrayList<Friend>();
 
                         for (FriendResponse friend: friendListResponse.getData()) {
@@ -48,5 +54,7 @@ public class Service {
                 });
     }
 
-
+    private void updatePage(FriendListResponse friendListResponse) {
+        this.curPage = friendListResponse.getPaging().getCursors().getAfter();
+    }
 }

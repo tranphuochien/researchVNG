@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.root.demoapp.R;
 import com.example.root.demoapp.data.model.Friend;
+import com.example.root.demoapp.presentation.di.AdapterRV;
+import com.example.root.demoapp.presentation.util.ImageManager.ImageManager;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -34,17 +34,19 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
     }
 
     private List<Friend> usersCollection;
+    private final ImageManager IMAGE_MANAGER;
     private final LayoutInflater layoutInflater;
     private final Context context;
 
     private OnItemClickListener onItemClickListener;
 
     @Inject
-    FriendsAdapter(Context context) {
+    FriendsAdapter(Context context, @AdapterRV ImageManager imageManager) {
         this.layoutInflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.usersCollection = Collections.emptyList();
         this.context = context;
+        this.IMAGE_MANAGER = imageManager;
     }
 
     @Override public int getItemCount() {
@@ -59,12 +61,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
     @Override public void onBindViewHolder(FriendViewHolder holder, final int position) {
         final Friend friendResponse = this.usersCollection.get(position);
         holder.textViewTitle.setText(friendResponse.getName());
-        Glide.with(context)
-                .load(friendResponse.getLinkAvatar())
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .placeholder(R.mipmap.ic_launcher)
-                .into(holder.imgAvatar);
+
+        IMAGE_MANAGER.load(context, friendResponse.getLinkAvatar(),holder.imgAvatar);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (FriendsAdapter.this.onItemClickListener != null) {
@@ -81,7 +80,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
     public void setUsersCollection(Collection<Friend> usersCollection) {
         this.validateUsersCollection(usersCollection);
 
-        this.usersCollection = (List<Friend>) usersCollection;
+        if (this.getItemCount() == 0) {
+            this.usersCollection = (List<Friend>)usersCollection;
+        } else {
+            this.usersCollection.addAll(usersCollection);
+        }
+
         this.notifyDataSetChanged();
     }
 
