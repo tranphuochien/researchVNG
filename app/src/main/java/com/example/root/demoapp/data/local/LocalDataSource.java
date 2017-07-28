@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 
 /**
  * Created by root on 21/07/2017.
@@ -27,13 +28,12 @@ public class LocalDataSource implements DataSource {
     @Override
     public Observable<ArrayList<Friend>> getData() {
         final ArrayList<Friend> list = new ArrayList<>();
-       // list.add(new Friend("AaIziyG1JEkBZEuLPbIpL_RKb7yvtCViFtp7wxXQYh_cCVu4z_By2eM5wEGyPk4W_M_E4KUhRLKfaRmWDwd0IjIXsYNMu5AOH5CHtjnb4wNerQ","abc", "https://scontent.xx.fbcdn.net/v/t1.0-1/c8.0.50.50/p50x50/11889657_528231363995171_106694820207113550_n.jpg?oh=68088b2d90424c8d0e745f1b4bab5bad&oe=5A0694D2"));
+        //list.add(new Friend("AaIziyG1JEkBZEuLPbIpL_RKb7yvtCViFtp7wxXQYh_cCVu4z_By2eM5wEGyPk4W_M_E4KUhRLKfaRmWDwd0IjIXsYNMu5AOH5CHtjnb4wNerQ","abc", "https://scontent.xx.fbcdn.net/v/t1.0-1/c8.0.50.50/p50x50/11889657_528231363995171_106694820207113550_n.jpg?oh=68088b2d90424c8d0e745f1b4bab5bad&oe=5A0694D2"));
 
-        return  Observable.fromCallable(new Callable<ArrayList<Friend>>() {
+        return Observable.defer(new Callable<ObservableSource<? extends ArrayList<Friend>>>() {
             @Override
-            public ArrayList<Friend> call() throws Exception {
-                //return mDaoSession.getUserDao().loadAll();
-                return list;
+            public ObservableSource<? extends ArrayList<Friend>> call() throws Exception {
+                return Observable.just(list);
             }
         });
     }

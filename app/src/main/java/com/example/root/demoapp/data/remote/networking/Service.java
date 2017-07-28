@@ -7,8 +7,10 @@ import com.example.root.demoapp.data.model.FriendResponse;
 import com.facebook.AccessToken;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -40,16 +42,22 @@ public class Service {
                 })
                 .flatMap(new Function<FriendListResponse, Observable<ArrayList<Friend>>>() {
                     @Override
-                    public Observable<ArrayList<Friend>> apply(@NonNull FriendListResponse friendListResponse) throws Exception {
-                        //Update afterPage
-                        updatePage(friendListResponse);
+                    public Observable<ArrayList<Friend>> apply(@NonNull final FriendListResponse friendListResponse) throws Exception {
+                        //return Observable.just(friendList);
+                        return Observable.defer(new Callable<ObservableSource<? extends ArrayList<Friend>>>() {
+                            @Override
+                            public ObservableSource<? extends ArrayList<Friend>> call() throws Exception {
+                                //Update afterPage
+                                updatePage(friendListResponse);
 
-                        ArrayList<Friend> friendList = new ArrayList<Friend>();
+                                ArrayList<Friend> friendList = new ArrayList<Friend>();
 
-                        for (FriendResponse friend: friendListResponse.getData()) {
-                            friendList.add(friend.convertToLocalModel());
-                        }
-                        return Observable.just(friendList);
+                                for (FriendResponse friend: friendListResponse.getData()) {
+                                    friendList.add(friend.convertToLocalModel());
+                                }
+                                return Observable.just(friendList);
+                            }
+                        });
                     }
                 });
     }
@@ -57,4 +65,5 @@ public class Service {
     private void updatePage(FriendListResponse friendListResponse) {
         this.curPage = friendListResponse.getPaging().getCursors().getAfter();
     }
+
 }

@@ -80,6 +80,7 @@ public class FriendListPresenter implements Presenter {
         Disposable subscription  =  repository.getData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .cache()
                 .subscribeWith(new DisposableObserver<ArrayList<Friend>>() {
 
                     @Override
@@ -89,7 +90,6 @@ public class FriendListPresenter implements Presenter {
 
                     @Override
                     public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-
                     }
 
                     @Override
