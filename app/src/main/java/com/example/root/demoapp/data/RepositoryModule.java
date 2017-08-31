@@ -11,7 +11,7 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * Created by root on 21/07/2017.
+ * Created by hientp on 21/07/2017.
  */
 
 @Module
