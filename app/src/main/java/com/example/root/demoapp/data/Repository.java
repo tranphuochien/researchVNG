@@ -13,7 +13,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Predicate;
 
 /**
- * Created by root on 21/07/2017.
+ * Created by hientp on 21/07/2017.
  */
 
 public class Repository implements DataSource{
